@@ -9,6 +9,14 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route("/")
 def home():
-    return "<h1>Hello from Render!</h1>"
+    return render_template("home.html")
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+@app.route("/calculator")
+def calculator():
+    return "<h2>Calculator coming soon!</h2>"
