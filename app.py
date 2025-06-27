@@ -1,10 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jun 12 12:02:50 2025
-
-@author: Admin
-"""
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -16,9 +10,17 @@ def home():
 def about():
     return render_template("about.html")
 
-@app.route("/calculator")
+@app.route("/calculator", methods=["GET", "POST"])
 def calculator():
-    return "<h2>Calculator coming soon!</h2>"
+    result = None
+    if request.method == "POST":
+        try:
+            num1 = float(request.form["num1"])
+            num2 = float(request.form["num2"])
+            result = num1 + num2
+        except ValueError:
+            result = "Invalid input"
+    return render_template("calculator.html", result=result)
 
 if __name__ == "__main__":
     app.run(debug=True)

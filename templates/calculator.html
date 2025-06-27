@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Calculator - Bosonica{% endblock %}
+
+{% block content %}
+    <h1>Simple Calculator</h1>
+    <form method="POST" action="/calculator">
+        <div class="mb-3">
+            <label for="num1" class="form-label">First Number:</label>
+            <input type="number" class="form-control" name="num1" required>
+        </div>
+        <div class="mb-3">
+            <label for="num2" class="form-label">Second Number:</label>
+            <input type="number" class="form-control" name="num2" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+
+    {% if result is not none %}
+        <hr>
+        <h4>Result: {{ result }}</h4>
+    {% endif %}
+{% endblock %}
