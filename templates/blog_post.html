@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - Bosonica{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <p class="text-muted">{{ section }} | {{ date }}</p>
+    <hr>
+    <div>{{ content|safe }}</div>
+{% endblock %}
