@@ -6,10 +6,10 @@
     <h1>dBm to mW Conversion</h1>
     <form method="POST" action="/calculator">
         <div class="mb-3">
-            <label for="Power [dBm]" class="form-label">First Number:</label>
-            <input type="number" class="form-control" name="Power [dBm]" step="any" required>
+            <label for="dBm" class="form-label">Power (dBm):</label>
+            <input type="number" class="form-control" name="dBm" step="any" required>
         </div>
-        <button type="Calculate" class="btn btn-primary">Add</button>
+        <button type="submit" class="btn btn-primary">Add</button>
     </form>
 
     {% if result is not none %}
