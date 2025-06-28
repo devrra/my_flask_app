@@ -16,9 +16,9 @@ def calculator():
     result = None
     if request.method == "POST":
         try:
-            num1 = float(request.form["num1"])  #dBm
+            num1 = float(request.form["Power [dBm]"])  #dBm
             # num2 = float(request.form["num2"])
-            result = 10*np.log10(num1/10)       #mW
+            result = 10^(num1/10)               #mW
         except ValueError:
             result = "Invalid input"
     return render_template("calculator.html", result=result)
