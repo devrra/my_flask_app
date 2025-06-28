@@ -23,6 +23,18 @@ def calculator():
             result = "Invalid input"
     return render_template("calculator.html", result=result)
 
+@app.route("/blogs/<section>")
+def blog_section(section):
+    titles = {
+        "inspirations": "Inspirations",
+        "reviews": "Technology Reviews",
+        "notes": "Technical Notes",
+        "fundamentals": "Fundamentals"
+    }
+    title = titles.get(section, "Blog Section")
+    return f"<h2>{title} blog coming soon!</h2>"
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
