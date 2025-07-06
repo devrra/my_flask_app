@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results - Bosonica{% endblock %}
+
+{% block content %}
+  <h1>Search Results for "{{ query }}"</h1>
+
+  {% if results %}
+    <ul class="list-group">
+      {% for post in results %}
+        <li class="list-group-item">
+          <a href="{{ url_for('blog', slug=post.slug) }}">
+            {{ post.title }} <small class="text-muted">({{ post.date }})</small>
+          </a><br>
+          <small>Tags: {{ post.tags | join(', ') }}</small>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No results found.</p>
+  {% endif %}
+{% endblock %}
