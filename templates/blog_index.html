@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.capitalize() }} Blogs - Bosonica{% endblock %}
+
+{% block content %}
+    <h1>{{ section.capitalize() }} Blogs</h1>
+    <ul class="list-group">
+        {% for post in posts %}
+            <li class="list-group-item">
+                <a href="{{ url_for('blog', section=section, slug=post.slug) }}">
+                    {{ post.title }} <small class="text-muted">({{ post.date }})</small>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

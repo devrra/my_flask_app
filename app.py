@@ -63,6 +63,35 @@ def blog(section, slug):
         content=content_html
     )
 
+@app.route("/blogs/<section>/")
+def blog_section_index(section):
+    valid_sections = ["inspirations", "reviews", "notes", "fundamentals"]
+    if section not in valid_sections:
+        abort(404)
+
+    root = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(root, "blog_posts", section)
+
+    if not os.path.exists(folder_path):
+        abort(404)
+
+    posts = []
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".md"):
+            slug = filename[:-3]  # remove .md
+            filepath = os.path.join(folder_path, filename)
+            post = frontmatter.load(filepath)
+            posts.append({
+                "title": post.get("title", slug),
+                "date": post.get("date", ""),
+                "slug": slug
+            })
+
+    # Sort by date (optional)
+    posts.sort(key=lambda x: x["date"], reverse=True)
+
+    return render_template("blog_index.html", section=section, posts=posts)
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
