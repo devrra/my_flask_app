@@ -42,55 +42,75 @@ def calculator():
 #     # print(f"Looking for: blog_posts/{section}/{slug}.md")
 #     return render_template("blog_post.html", title=post['title'], date=post['date'], section=post['section'], content=content_html)
 
-@app.route("/blogs/<section>/<slug>")
-def blog(section, slug):
-    valid_sections = ["inspirations", "reviews", "notes", "fundamentals"]
-    if section not in valid_sections:
-        abort(404)
+@app.route("/blogs/<slug>")
+def blog(slug):
+    root = os.path.dirname(os.path.abspath(__file__))
+    filepath = os.path.join(root, "blog_posts", f"{slug}.md")
 
-    filepath = os.path.join("blog_posts", section, f"{slug}.md")
     if not os.path.exists(filepath):
-        print(f"Missing file: {filepath}")  # Debug line
         abort(404)
 
     post = frontmatter.load(filepath)
     content_html = markdown2.markdown(post.content)
-    return render_template(
-        "blog_post.html",
-        title=post.get("title", "Untitled"),
-        date=post.get("date", "Unknown date"),
-        section=post.get("section", section),
-        content=content_html
-    )
+    return render_template("blog_post.html",
+                           title=post.get("title", slug),
+                           date=post.get("date", ""),
+                           tags=post.get("tags", []),
+                           content=content_html)
 
-@app.route("/blogs/<section>/")
-def blog_section_index(section):
-    valid_sections = ["inspirations", "reviews", "notes", "fundamentals"]
-    if section not in valid_sections:
-        abort(404)
-
+@app.route("/search")
+def search():
+    query = request.args.get("q", "").lower()
     root = os.path.dirname(os.path.abspath(__file__))
-    folder_path = os.path.join(root, "blog_posts", section)
+    folder_path = os.path.join(root, "blog_posts")
 
-    if not os.path.exists(folder_path):
-        abort(404)
+    matches = []
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".md"):
+            slug = filename[:-3]
+            filepath = os.path.join(folder_path, filename)
+            post = frontmatter.load(filepath)
+
+            title = post.get("title", "")
+            tags = post.get("tags", [])
+            content = post.content
+
+            if (
+                query in title.lower()
+                or any(query in tag.lower() for tag in tags)
+                or query in content.lower()
+            ):
+                matches.append({
+                    "title": title,
+                    "slug": slug,
+                    "date": post.get("date", ""),
+                    "tags": tags,
+                })
+
+    return render_template("search_results.html", query=query, results=matches)
+
+@app.route("/blogs")
+def blog_index():
+    root = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(root, "blog_posts")
 
     posts = []
     for filename in os.listdir(folder_path):
         if filename.endswith(".md"):
-            slug = filename[:-3]  # remove .md
+            slug = filename[:-3]
             filepath = os.path.join(folder_path, filename)
             post = frontmatter.load(filepath)
             posts.append({
                 "title": post.get("title", slug),
                 "date": post.get("date", ""),
+                "tags": post.get("tags", []),
                 "slug": slug
             })
 
-    # Sort by date (optional)
-    posts.sort(key=lambda x: x["date"], reverse=True)
+    # Sort by date (if present)
+    posts.sort(key=lambda p: p["date"], reverse=True)
 
-    return render_template("blog_index.html", section=section, posts=posts)
+    return render_template("blog_index.html", posts=posts)
 
 
 if __name__ == "__main__":

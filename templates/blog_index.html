@@ -1,16 +1,27 @@
 {% extends "base.html" %}
 
-{% block title %}{{ section.capitalize() }} Blogs - Bosonica{% endblock %}
+{% block title %}All Blogs - Bosonica{% endblock %}
 
 {% block content %}
-    <h1>{{ section.capitalize() }} Blogs</h1>
+<h1>All Blog Posts</h1>
+
+{% if posts %}
     <ul class="list-group">
         {% for post in posts %}
-            <li class="list-group-item">
-                <a href="{{ url_for('blog', section=section, slug=post.slug) }}">
-                    {{ post.title }} <small class="text-muted">({{ post.date }})</small>
+        <li class="list-group-item">
+            <h5>
+                <a href="{{ url_for('blog', slug=post.slug) }}">
+                    {{ post.title }}
                 </a>
-            </li>
+            </h5>
+            <small class="text-muted">{{ post.date }}</small><br>
+            {% if post.tags %}
+                <small>Tags: {{ post.tags | join(', ') }}</small>
+            {% endif %}
+        </li>
         {% endfor %}
     </ul>
+{% else %}
+    <p>No blog posts yet.</p>
+{% endif %}
 {% endblock %}
