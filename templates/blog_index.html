@@ -1,27 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %}All Blogs - Bosonica{% endblock %}
+{% block title %}Bosonica Blog{% endblock %}
 
 {% block content %}
-<h1>All Blog Posts</h1>
+<h1 class="mb-4">Bosonica Blog</h1>
 
-{% if posts %}
-    <ul class="list-group">
-        {% for post in posts %}
-        <li class="list-group-item">
-            <h5>
-                <a href="{{ url_for('blog', slug=post.slug) }}">
-                    {{ post.title }}
-                </a>
-            </h5>
-            <small class="text-muted">{{ post.date }}</small><br>
-            {% if post.tags %}
-                <small>Tags: {{ post.tags | join(', ') }}</small>
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No blog posts yet.</p>
-{% endif %}
+<div class="row row-cols-1 row-cols-md-2 g-4">
+  {% for post in posts %}
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">
+          <a href="{{ url_for('blog', slug=post.slug) }}" class="text-decoration-none">
+            {{ post.title }}
+          </a>
+        </h5>
+        <p class="card-text"><small class="text-muted">{{ post.date }}</small></p>
+        <p class="card-text">{{ post.excerpt }}</p>
+        {% if post.tags %}
+          <p class="card-text">
+            <span class="badge bg-secondary me-1">{{ post.tags | join('</span> <span class="badge bg-secondary me-1">') }}</span>
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}

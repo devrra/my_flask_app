@@ -89,6 +89,9 @@ def search():
 
     return render_template("search_results.html", query=query, results=matches)
 
+def get_excerpt(content, length=200):
+    return content.strip().replace('\n', ' ')[:length] + "..."
+
 @app.route("/blogs")
 def blog_index():
     root = os.path.dirname(os.path.abspath(__file__))
@@ -100,17 +103,19 @@ def blog_index():
             slug = filename[:-3]
             filepath = os.path.join(folder_path, filename)
             post = frontmatter.load(filepath)
+            excerpt = get_excerpt(post.content)
             posts.append({
                 "title": post.get("title", slug),
                 "date": post.get("date", ""),
                 "tags": post.get("tags", []),
-                "slug": slug
+                "slug": slug,
+                "excerpt": excerpt
             })
 
-    # Sort by date (if present)
     posts.sort(key=lambda p: p["date"], reverse=True)
 
     return render_template("blog_index.html", posts=posts)
+
 
 
 if __name__ == "__main__":
