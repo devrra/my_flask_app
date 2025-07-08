@@ -106,10 +106,10 @@ def blog_index():
             excerpt = get_excerpt(post.content)
             posts.append({
                 "title": post.get("title", slug),
+                "date": post.get("date", ""),
                 "tags": post.get("tags", []),
                 "slug": slug,
-                "excerpt": excerpt,
-                "image": post.get("image", None)
+                "excerpt": excerpt
             })
 
     posts.sort(key=lambda p: p["date"], reverse=True)
