@@ -3,6 +3,8 @@ import numpy as np
 import os
 import frontmatter
 import markdown2
+from datetime import datetime
+
 
 def load_all_posts():
     root = os.path.dirname(os.path.abspath(__file__))
@@ -14,12 +16,21 @@ def load_all_posts():
             path = os.path.join(blog_dir, filename)
             post = frontmatter.load(path)
 
+            # Parse date safely
+            raw_date = post.get("date")
+            try:
+                parsed_date = datetime.strptime(raw_date, "%Y-%m-%d") if raw_date else datetime.min
+            except ValueError:
+                parsed_date = datetime.min
+
             posts.append({
                 "title": post.get("title", filename.replace(".md", "")),
-                "slug": filename.replace(".md", "")
+                "slug": filename.replace(".md", ""),
+                "date": parsed_date,
+                "date_str": raw_date
             })
 
-    # Optional: sort alphabetically or by date
+    # Sort by date (newest first)
     posts.sort(key=lambda x: x["date"], reverse=True)
 
     return posts
