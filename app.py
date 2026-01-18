@@ -20,7 +20,7 @@ def load_all_posts():
             })
 
     # Optional: sort alphabetically or by date
-    posts.sort(key=lambda x: x["title"].lower())
+    # posts.sort(key=lambda x: x["title"].lower())
 
     return posts
 
