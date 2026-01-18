@@ -46,3 +46,32 @@
         display: block;
     }
 }
+
+/* Blog sidebar (desktop) */
+
+.blog-sidebar {
+    height: calc(100vh - 80px);
+    border-right: 1px solid #eaeaea;
+}
+
+.sidebar-inner {
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.sidebar-item {
+    margin-bottom: 8px;
+}
+
+.sidebar-item a {
+    font-size: 0.9rem;
+    color: #333;
+    text-decoration: none;
+}
+
+.sidebar-item a:hover {
+    text-decoration: underline;
+}

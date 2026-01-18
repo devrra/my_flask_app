@@ -4,6 +4,25 @@ import os
 import frontmatter
 import markdown2
 
+def load_all_posts():
+    root = os.path.dirname(os.path.abspath(__file__))
+    blog_dir = os.path.join(root, "blog_posts")
+
+    posts = []
+    for filename in os.listdir(blog_dir):
+        if filename.endswith(".md"):
+            path = os.path.join(blog_dir, filename)
+            post = frontmatter.load(path)
+
+            posts.append({
+                "title": post.get("title", filename.replace(".md", "")),
+                "slug": filename.replace(".md", "")
+            })
+
+    # Optional: sort alphabetically or by date
+    posts.sort(key=lambda x: x["title"].lower())
+
+    return posts
 
 
 app = Flask(__name__)
@@ -42,6 +61,22 @@ def calculator():
 #     # print(f"Looking for: blog_posts/{section}/{slug}.md")
 #     return render_template("blog_post.html", title=post['title'], date=post['date'], section=post['section'], content=content_html)
 
+# @app.route("/blogs/<slug>")
+# def blog(slug):
+#     root = os.path.dirname(os.path.abspath(__file__))
+#     filepath = os.path.join(root, "blog_posts", f"{slug}.md")
+
+#     if not os.path.exists(filepath):
+#         abort(404)
+
+#     post = frontmatter.load(filepath)
+#     content_html = markdown2.markdown(post.content)
+#     return render_template("blog_post.html",
+#                            title=post.get("title", slug),
+#                            date=post.get("date", ""),
+#                            tags=post.get("tags", []),
+#                            content=content_html)
+
 @app.route("/blogs/<slug>")
 def blog(slug):
     root = os.path.dirname(os.path.abspath(__file__))
@@ -52,11 +87,18 @@ def blog(slug):
 
     post = frontmatter.load(filepath)
     content_html = markdown2.markdown(post.content)
-    return render_template("blog_post.html",
-                           title=post.get("title", slug),
-                           date=post.get("date", ""),
-                           tags=post.get("tags", []),
-                           content=content_html)
+
+    posts = load_all_posts()
+
+    return render_template(
+        "blog_post.html",
+        title=post.get("title", slug),
+        date=post.get("date", ""),
+        tags=post.get("tags", []),
+        content=content_html,
+        posts=posts
+    )
+
 
 @app.route("/search")
 def search():

@@ -1,50 +1,76 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <title>{% block title %}Bosonica{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+```
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+```
+
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="/">Bosonica</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/calculator">Calculator</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/blogs">Blogs</a>
-                    </li>
-                </ul>
-                <!-- Search Form -->
-                <form class="d-flex" method="GET" action="/search">
-                    <input class="form-control me-2" type="search" name="q" placeholder="Search blogs" aria-label="Search">
-                    <button class="btn btn-outline-primary" type="submit">Search</button>
-                </form>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Main Content -->
+```
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
     <div class="container">
-        {% block content %}{% endblock %}
-    </div>
+        <a class="navbar-brand" href="/">Bosonica</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <!-- Bootstrap JS Bundle (includes Popper.js) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="/calculator">Calculator</a></li>
+                <li class="nav-item"><a class="nav-link" href="/blogs">Blogs</a></li>
+            </ul>
+
+            <!-- Search -->
+            <form class="d-flex" method="GET" action="/search">
+                <input class="form-control me-2" type="search" name="q" placeholder="Search blogs">
+                <button class="btn btn-outline-primary" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Layout -->
+<div class="container-fluid">
+    <div class="row">
+
+        {% if posts is defined %}
+        <!-- Sidebar (Desktop only) -->
+        <aside class="col-md-3 d-none d-md-block blog-sidebar">
+            <div class="sidebar-inner">
+                <h6 class="text-muted mb-3">All Blogs</h6>
+                {% for p in posts %}
+                    <div class="sidebar-item">
+                        <a href="{{ url_for('blog', slug=p.slug) }}">
+                            {{ p.title }}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </aside>
+        {% endif %}
+
+        <!-- Main Content -->
+        <main class="{% if posts is defined %}col-md-9{% else %}col-md-12{% endif %}">
+            {% block content %}{% endblock %}
+        </main>
+
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+```
+
 </body>
 </html>
