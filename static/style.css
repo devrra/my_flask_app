@@ -92,3 +92,7 @@
     padding-right: 0.75rem;
 }
 
+.blog-right-panel {
+    min-height: 100%;
+    border-left: 1px solid #e5e5e5;
+}
