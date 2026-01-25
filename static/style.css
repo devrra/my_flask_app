@@ -75,3 +75,9 @@
 .sidebar-item a:hover {
     text-decoration: underline;
 }
+
+.blog-content {
+    max-width: 720px;   /* controls line length */
+    margin-left: 0;
+    margin-right: auto; /* leaves space on the right */
+}
