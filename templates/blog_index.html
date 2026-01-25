@@ -3,26 +3,5 @@
 
 {% block content %}
 <h1 class="mb-4">Blog</h1>
-
-<div class="blog-list">
-  {% for post in posts %}
-    <div class="blog-item">
-      <a href="{{ url_for('blog', slug=post.slug) }}" class="blog-title">
-        {{ post.title }}
-      </a>
-
-      <div class="blog-preview">
-        <p class="excerpt">
-          {{ post.excerpt }}
-        </p>
-
-        <div class="tags">
-          {% for tag in post.tags %}
-            <span class="badge bg-secondary me-1">{{ tag }}</span>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-  {% endfor %}
-</div>
+{% include "blog_list.html" %}
 {% endblock %}

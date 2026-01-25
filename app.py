@@ -7,23 +7,47 @@ from datetime import datetime
 
 def load_all_posts():
     root = os.path.dirname(os.path.abspath(__file__))
-    blog_dir = os.path.join(root, "blog_posts")
+    folder_path = os.path.join(root, "blog_posts")
 
     posts = []
-    for filename in os.listdir(blog_dir):
+    for filename in os.listdir(folder_path):
         if filename.endswith(".md"):
-            path = os.path.join(blog_dir, filename)
-            post = frontmatter.load(path)
+            slug = filename[:-3]
+            filepath = os.path.join(folder_path, filename)
+            post = frontmatter.load(filepath)
+            excerpt = get_excerpt(post.content)
 
             posts.append({
-                "title": post.get("title", filename.replace(".md", "")),
-                "slug": filename.replace(".md", "")
+                "title": post.get("title", slug),
+                "date": post.get("date", ""),
+                "tags": post.get("tags", []),
+                "slug": slug,
+                "excerpt": excerpt
             })
 
-    # Optional: sort alphabetically or by date
-    # posts.sort(key=lambda x: x["title"].lower())
-
+    posts.sort(key=lambda p: p["date"] or "0000-00-00", reverse=True)
     return posts
+
+
+# def load_all_posts():
+#     root = os.path.dirname(os.path.abspath(__file__))
+#     blog_dir = os.path.join(root, "blog_posts")
+
+#     posts = []
+#     for filename in os.listdir(blog_dir):
+#         if filename.endswith(".md"):
+#             path = os.path.join(blog_dir, filename)
+#             post = frontmatter.load(path)
+
+#             posts.append({
+#                 "title": post.get("title", filename.replace(".md", "")),
+#                 "slug": filename.replace(".md", "")
+#             })
+
+#     # Optional: sort alphabetically or by date
+#     # posts.sort(key=lambda x: x["title"].lower())
+
+#     return posts
 
 
 # def load_all_posts():
@@ -77,37 +101,6 @@ def calculator():
             result = "Invalid input"
     return render_template("calculator.html", result=result)
 
-# @app.route("/blogs/<section>/<slug>")
-# def blog(section, slug):
-#     valid_sections = ["inspirations", "reviews", "notes", "fundamentals"]
-#     if section not in valid_sections:
-#         abort(404)
-
-#     filepath = os.path.join("blog_posts", section, f"{slug}.md")
-#     if not os.path.exists(filepath):
-#         abort(404)
-
-#     post = frontmatter.load(filepath)
-#     content_html = markdown2.markdown(post.content)
-#     # print(f"Looking for: blog_posts/{section}/{slug}.md")
-#     return render_template("blog_post.html", title=post['title'], date=post['date'], section=post['section'], content=content_html)
-
-# @app.route("/blogs/<slug>")
-# def blog(slug):
-#     root = os.path.dirname(os.path.abspath(__file__))
-#     filepath = os.path.join(root, "blog_posts", f"{slug}.md")
-
-#     if not os.path.exists(filepath):
-#         abort(404)
-
-#     post = frontmatter.load(filepath)
-#     content_html = markdown2.markdown(post.content)
-#     return render_template("blog_post.html",
-#                            title=post.get("title", slug),
-#                            date=post.get("date", ""),
-#                            tags=post.get("tags", []),
-#                            content=content_html)
-
 @app.route("/blogs/<slug>")
 def blog(slug):
     root = os.path.dirname(os.path.abspath(__file__))
@@ -129,6 +122,29 @@ def blog(slug):
         content=content_html,
         posts=posts
     )
+
+
+# @app.route("/blogs/<slug>")
+# def blog(slug):
+#     root = os.path.dirname(os.path.abspath(__file__))
+#     filepath = os.path.join(root, "blog_posts", f"{slug}.md")
+
+#     if not os.path.exists(filepath):
+#         abort(404)
+
+#     post = frontmatter.load(filepath)
+#     content_html = markdown2.markdown(post.content)
+
+#     posts = load_all_posts()
+
+#     return render_template(
+#         "blog_post.html",
+#         title=post.get("title", slug),
+#         date=post.get("date", ""),
+#         tags=post.get("tags", []),
+#         content=content_html,
+#         posts=posts
+#     )
 
 
 @app.route("/search")
@@ -167,27 +183,33 @@ def get_excerpt(content, length=200):
 
 @app.route("/blogs")
 def blog_index():
-    root = os.path.dirname(os.path.abspath(__file__))
-    folder_path = os.path.join(root, "blog_posts")
-
-    posts = []
-    for filename in os.listdir(folder_path):
-        if filename.endswith(".md"):
-            slug = filename[:-3]
-            filepath = os.path.join(folder_path, filename)
-            post = frontmatter.load(filepath)
-            excerpt = get_excerpt(post.content)
-            posts.append({
-                "title": post.get("title", slug),
-                "date": post.get("date", ""),
-                "tags": post.get("tags", []),
-                "slug": slug,
-                "excerpt": excerpt
-            })
-
-    posts.sort(key=lambda p: p["date"], reverse=True)
-
+    posts = load_all_posts()
     return render_template("blog_index.html", posts=posts)
+
+
+# @app.route("/blogs")
+# def blog_index():
+#     root = os.path.dirname(os.path.abspath(__file__))
+#     folder_path = os.path.join(root, "blog_posts")
+
+#     posts = []
+#     for filename in os.listdir(folder_path):
+#         if filename.endswith(".md"):
+#             slug = filename[:-3]
+#             filepath = os.path.join(folder_path, filename)
+#             post = frontmatter.load(filepath)
+#             excerpt = get_excerpt(post.content)
+#             posts.append({
+#                 "title": post.get("title", slug),
+#                 "date": post.get("date", ""),
+#                 "tags": post.get("tags", []),
+#                 "slug": slug,
+#                 "excerpt": excerpt
+#             })
+
+#     posts.sort(key=lambda p: p["date"] or "0000-00-00", reverse=True)
+
+#     return render_template("blog_index.html", posts=posts)
 
 
 
