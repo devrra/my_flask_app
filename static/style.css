@@ -80,4 +80,15 @@
     max-width: 720px;   /* controls line length */
     margin-left: 0;
     margin-right: auto; /* leaves space on the right */
+    text-align: justify;
+    hyphens: auto;
 }
+
+.blog-list-panel {
+    font-size: 0.9rem;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    border-right: 1px solid #e5e5e5;
+    padding-right: 0.75rem;
+}
+
